@@ -74,17 +74,23 @@ def count_areas(grid, owners):
             'count': 0,
             'include' : True
         }
+
+    # * is a specicial key - don't count it.
     tallies['*'] = {
         'count': 0,
         'include': False
     }
+
+    # Make everything along the two x-axis false
     for index in range(len(grid)):
         tallies[grid[index][0]['owner']]['include'] = False
         tallies[grid[index][len(grid[0])-1]['owner']]['include'] = False
-    
+
+    # Make everything along the two y-axis false
     for index in range(len(grid[0])):
         tallies[grid[0][index]['owner']]['include'] = False
         tallies[grid[len(grid)-1][index]['owner']]['include'] = False
+
     for y_points in grid:
         for grid_point in y_points:
             if tallies[grid_point['owner']]['include']:
