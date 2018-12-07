@@ -8,51 +8,45 @@ for line in f:
     cmds.append(extract_parent_and_child_nodes(line.replace('\n','')))
 f.close()
 
-
-print(cmds)
-def find_parent(cmds):
-    parents = list(map(lambda a: a[0],cmds))
-    children = list(map(lambda a: a[1],cmds))
-    super_parent = ''
+def find_parents(cmds):
+    parents = list(set(map(lambda a: a[0], cmds)))
+    children = list(set(map(lambda a: a[1], cmds)))
+    super_parents = []
     for parent in parents:
         if parent not in children:
-            super_parent = parent
-            break
-    return super_parent
-parent = find_parent(cmds)
+            super_parents.append(parent)
+    return super_parents
+
+
+parents = find_parents(cmds)
+
+super_parent = '*'
+for parent in parents:
+    cmds.append(['*', parent])
+
 available_tasks = []
-print(parent)
 
-order = parent
-
+order = super_parent
 def get_available_tasks(cmds, parent):
     connected_to_master = {}
     for cmd in cmds:
         if cmd[0] != parent:
             connected_to_master[cmd[1]] = False
-        elif cmd[0] not in connected_to_master:
+        elif cmd[1] not in connected_to_master:
             connected_to_master[cmd[1]] = True
-    print(connected_to_master)
+    return list(set(map(lambda a : a[1], filter(lambda a: connected_to_master[a[1]] , cmds))))
 
-    return list(map(lambda a : a[1], filter(lambda a: connected_to_master[a[1]] , cmds)))
-
-
-while len(cmds)>0:
-    new_tasks = get_available_tasks(cmds, parent)
-    available_tasks = available_tasks + new_tasks 
-    print(f"Appended tasked {available_tasks}")
-    # re-order tasks
+while len(cmds) > 0:
+    new_tasks = get_available_tasks(cmds, super_parent)
+    available_tasks = list(set(available_tasks + new_tasks))
     available_tasks.sort()
-    if len(available_tasks) > 0:
-        current_task = available_tasks[0]
-        order += current_task
-        available_tasks.remove(current_task)
-    print(f"Adjusted tasks {available_tasks}")
+    current_task = available_tasks[0]
+    order += current_task
+    available_tasks.remove(current_task)
     def mapper(a):
         if a[0] == current_task:
-            a[0] = parent
+            a[0] = super_parent
         return a
-    cmds = list(map(mapper,filter(lambda a: a[0]!= parent, cmds)))
+    cmds = list(map(mapper,filter(lambda a: a[0]!= super_parent, cmds)))
 
-    print(f"Updated cmds: {cmds}")
-    print(order)
+print(order.replace('*',''))
