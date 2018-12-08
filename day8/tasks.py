@@ -1,6 +1,6 @@
 f = open('task.data', 'r')
 
-icense_data = []
+license_data = []
 for line in f:
     numbers = line.replace('\n','').split(' ')
     license_data = list(map(lambda n : int(n), numbers))
@@ -35,7 +35,6 @@ assert get_data(0, [2, 3, 0, 3, 10, 11, 12, 1, 1, 0, 1, 99, 2, 1, 1, 2]) \
 (_, metadata) = get_data(0, license_data)
 
 print(f"Task 1: {sum(metadata)}")
-
 
 def get_value(index, data):
     if data[index] == 0:
