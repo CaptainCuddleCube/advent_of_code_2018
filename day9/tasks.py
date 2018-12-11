@@ -7,7 +7,7 @@ def game_rules(round: dllist, current_marble, next_marble):
     if next_marble % 23 == 0:
         score += next_marble
         node = current_marble
-        for i in range(7):
+        for _ in range(7):
             node = node.prev
             if node == None:
                 node = round.last
@@ -18,13 +18,12 @@ def game_rules(round: dllist, current_marble, next_marble):
         next_step = current_marble.next
         if next_step is None:
             if len(round)>1:
-                next_step = round.nodeat(1)
+                next_step = round.first.next
             else:
                 next_marble = None
         else:
             next_step = next_step.next
-        current_node =  next_step
-        current_marble = round.insert(next_marble, current_node)
+        current_marble = round.insert(next_marble, next_step)
     return (round, current_marble, score)
 
 
@@ -80,6 +79,9 @@ for line in f:
     data.append(int(numbers[6]))
 f.close()
 
-
+t1 = time.time()
 print(f"Task 1: {highscore(play_game(data[0], data[1]))}")
+print(f"execution time: {time.time()-t1}")
+t1 = time.time()
 print(f"Task 2: {highscore(play_game(data[0], data[1]*100))}")
+print(f"execution time: {time.time()-t1}")
